@@ -140,39 +140,11 @@ int max_args_exp(A_ExpList exp_list) {
     A_Exp exp = exp_list->exp;
     assert(exp);
 
-    if (exp->kind == Eseq_Exp && exp->stm != NULL) {
-         return 1 + max(max_args_stm(exp->stm), max_args_exp(exp_list->tail));
+    if (exp->kind == Eseq_Exp && exp->u.eseq_exp.stm != NULL) {
+         return 1 + max(max_args_stm(exp->u.eseq_exp.stm), max_args_exp(exp_list->tail));
     }
     return 1 + max_args_exp(exp_list->tail);
    
 }
 
 
-// Recursive Descent
-
-A_Stm parse_stm(TokenStack token_stack) {
-     /*
-      * @brief parse_stm parser for statement by consuming tokens 
-      * @param token_stack token stack with tokens made by lexer
-      */
-      return NULL;
-}
-
-A_Exp parse_exp(TokenStack token_stack) {
-     /*
-      * @brief parse_exp parser for expression by consuming tokens
-      * @param token_stack token stack with tokens made by lexer
-      */
-
-     return NULL;
-}
-
-A_ExpList parse_explist(TokenStack token_stack) {
-
-    /*
-     * @brief parse_explist parses expression list
-     * @param token_stack token stack with tokens made by lexer
-     */
-
-    return NULL;
-}

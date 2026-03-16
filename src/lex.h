@@ -8,21 +8,21 @@
 #include "util.h"
 
 
-typedef enum {
-     LPAR,
-     RPAR,
+enum Token {
+     L_PAREN,
+     R_PAREN,
      ID,
      ASSIGN,
-     COMMA,
      PRINT,
      NUM,
      MUL, 
-     ADD, 
+     PLUS, 
      SUB,
      DIV,
+     MOD,
      SEMI_COLON
-} Token;
-
+};
+typedef enum Token Token;
 struct RawToken_{
     Token token;
     string text;
@@ -33,21 +33,27 @@ struct RawToken_{
 typedef struct RawToken_* RawToken;
 
 struct TokenQueue_ {
-    RawToken* token_head;
-    RawToken* token_tail;
+    RawToken token_head;
+    RawToken token_tail;
     size_t size;
 };
 
+struct Lexer_ {
+     struct TokenQueue_* queue;
+     size_t pos;
+};
+
+
 typedef struct TokenQueue_* TokenQueue;
+typedef struct Lexer_* Lexer;
 
-TokenQueue make_token_queue(void);
+Lexer make_lexer(void);
+int is_queue_empty(Lexer lexer);
+Lexer enqueue_token(Lexer lexer, RawToken token);
 
-int is_empty(TokenQueue token_queue);
-TokenQueue enqueue(TokenQueue token_queue, RawToken token);
-RawToken dequeue(TokenQueue token_queue);
+RawToken dequeue_token(Lexer lexer);
 
-RawToken consume(string text);
-
+Lexer read_tokens(Lexer lexer, FILE* fd);
 
 
 #endif

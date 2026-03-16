@@ -11,10 +11,10 @@
 #include "util.h"
 
 typedef enum {
-    MUL,
-    DIV,
-    ADD,
-    SUB
+    OP_MUL,
+    OP_DIV,
+    OP_ADD,
+    OP_SUB
 } BinOp;
 
 
@@ -66,11 +66,6 @@ int max_args_stm(A_Stm stm);
 int max_args_exp(A_ExpList exp_list);
 
 
-// Recursive Descent
-
-A_Exp parse_exp(TokenStack token_stack);
-A_Stm parse_stm(TokenStack token_stack);
-A_ExpList parse_explist(TokenStack token_stack);
 
 
 

@@ -10,3 +10,5 @@ $(build_dir)/interpreter: $(SRC_DIR)/main.c
 $(build_dir)/$(test_dir)/test_symbol_table.o: 
 	$(CC) $(CFLAGS) -I$(SRC_DIR) $(SRC_DIR)/symbol.c $(SRC_DIR)/util.c $(test_dir)/test_symbol_table.c -o $@
 
+$(build_dir)/$(test_dir)/test_lex.o:
+	$(CC) $(CFLAGS) -I$(SRC_DIR) $(SRC_DIR)/lex.c $(SRC_DIR)/util.c $(test_dir)/test_lex.c -o $@
