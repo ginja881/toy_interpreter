@@ -3,21 +3,23 @@
 #include "lex.h"
 
 int main(void) {
-     char* f_path = "tests/source_files/first.straight";
+     char* f_path = "tests/source_files/second.straight";
      FILE* fd = fopen(f_path, "r");
      Lexer lexer = make_lexer();
      lexer = read_tokens(lexer, fd);
 
      A_Stm root = parse_source_code(lexer);
-
-     if (root->kind == AssignStm) {
-           
-           printf("\n %s \n", root->u.assign_stm.id);
-	   if (root->u.assign_stm.exp->kind == Num_Exp)
-	       printf("\n  IS NUM_EXP \n");
-	   else if (root->u.assign_stm.exp->kind == ID_Exp)
-	       printf("\n IS ID_EXP\n");
-     }
+     do {
+           A_Stm main_stm = root->u.compound_stm.stm1; 
+           if (main_stm->kind == PrintStm)
+	      printf("\n Print Stm\n");
+	   else if (main_stm->kind == AssignStm)
+	      printf("\n Assign Stm\n");
+	   else if (main_stm->kind == ExpStm)
+	      printf("\n Exp Stm\n");
+	      
+	   root = root->u.compound_stm.stm2;
+     } while (root->kind == CompoundStm);
 
      fclose(fd);
      return EXIT_SUCCESS;

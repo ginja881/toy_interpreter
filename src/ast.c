@@ -230,8 +230,50 @@ A_Exp parse_term(Lexer lexer) {
      }
      return left;
 }
+int check_next_stm_eseq(Lexer lexer) {
+      RawToken next_token = peek(lexer)->next;
+      if (next_token->token == PRINT) {
+          if (next_token->next == NULL)
+	     return FALSE;
+	  else if (next_token->next->token != L_PAREN)
+	     return FALSE;
+	  return TRUE;
+      }
+      else if (next_token->token == ID) {
+          if (next_token->next == NULL)
+	     return FALSE;
+	  else if (next_token->next->token != ASSIGN)
+	      return FALSE;
+	  return TRUE;
+      }
+      else if (next_token->token == ID || next_token->token == NUM)
+          return TRUE;
 
+      return FALSE;
+}
 A_Exp parse_expression(Lexer lexer) {
+     
+     if (match(L_PAREN, lexer) == TRUE) {
+          
+	  if (check_next_stm_eseq(lexer) == FALSE) {
+	       return parse_term(lexer);           
+	  }
+	  eat_token(lexer);
+	  A_Stm eseq_stm = parse_statement(lexer);
+	  
+	  if (match(COMMA, lexer) != TRUE)
+	      error(SYNTAX_ERROR, (peek(lexer))->pos);
+
+	  eat_token(lexer);
+
+	  A_Exp eseq_expression = parse_expression(lexer); 
+	  
+	  if (match(R_PAREN, lexer) != TRUE)
+	     error(SYNTAX_ERROR, (peek(lexer))->pos);
+	  eat_token(lexer);
+
+	  return eseq_exp(eseq_stm, eseq_expression);
+     }
      return parse_term(lexer);
 }
 A_ExpList parse_expression_list(Lexer lexer) {
@@ -243,22 +285,23 @@ A_ExpList parse_expression_list(Lexer lexer) {
            node->tail = exp_list(parse_expression(lexer));
 	   node = node->tail;
 
-	   if (match(R_PAREN, lexer) == TRUE)
-	      eat_token(lexer);
-           else
-	      break;
+	   eat_token(lexer);
       }
+
       return head;
 }
 A_Stm parse_statement(Lexer lexer) {
      A_Stm main_stm = NULL;
      RawToken current_token = peek(lexer);
      // The fuck?
-     
+     printf("\n %s \n", current_token->text);
      if (current_token->token == PRINT) {
           eat_token(lexer);
-	  if (peek(lexer)->token != L_PAREN)
-	     error(SYNTAX_ERROR, (peek(lexer))->pos);
+
+	  if (is_queue_empty(lexer) == TRUE)
+	     error(SYNTAX_ERROR, current_token->pos); 
+	  else if (peek(lexer)->token != L_PAREN)
+	      error(SYNTAX_ERROR, (peek(lexer))->pos);
 
 	  eat_token(lexer);
 	  A_ExpList expression_list = parse_expression_list(lexer);
@@ -272,7 +315,10 @@ A_Stm parse_statement(Lexer lexer) {
      else if (current_token->token == ID) {
            string id = current_token->text;
 	   eat_token(lexer);
-	   if (peek(lexer)->token !=ASSIGN)
+
+	   if (is_queue_empty(lexer) == TRUE)
+	      error(SYNTAX_ERROR, (peek(lexer))->pos);
+	   else if (peek(lexer)->token !=ASSIGN)
 	      error(SYNTAX_ERROR, (peek(lexer))->pos);
 
 	   eat_token(lexer);
@@ -281,7 +327,7 @@ A_Stm parse_statement(Lexer lexer) {
 	  
 	   main_stm = assign_stm(id, main_exp);
      }
-     else if (current_token->token == NUM) {
+     else if (current_token->token == NUM || current_token->token == ID) {
           A_Exp main_exp = parse_expression(lexer);
 	  main_stm = expression_stm(main_exp);
      }
@@ -305,10 +351,12 @@ A_Stm parse_source_code(Lexer lexer) {
       RawToken current_token = peek(lexer);
       while (is_queue_empty(lexer) == FALSE && current_token->token != END_OF_FILE) {
                // Make STM
-	      
+	       
                current_stm = parse_statement(lexer);
 	       // Check for compound statement
 	       current_token = peek(lexer);
+	       printf("\nParsing token %s \n", current_token->text);
+	       
 	       if (match(SEMI_COLON, lexer) == TRUE) {
 	            eat_token(lexer);
 		    // Root case
@@ -321,6 +369,7 @@ A_Stm parse_source_code(Lexer lexer) {
 	          error(SYNTAX_ERROR, current_token->pos);
 	       // Update reference to stream front
 	       current_token = peek(lexer);
+	       printf("\n success\n");
       }
       return root;
 }
