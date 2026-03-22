@@ -28,6 +28,7 @@ struct RawToken_{
     Token token;
     string text;
     size_t pos;
+    size_t line_pos;
     size_t text_size;
     struct RawToken_* next;
 };
@@ -57,7 +58,7 @@ RawToken eat_token(Lexer lexer);
 RawToken peek(Lexer lexer);
 RawToken next_token(Lexer lexer);
 
-Lexer read_tokens(Lexer lexer, FILE* fd);
+Lexer read_tokens(Lexer lexer, char* input, size_t size, size_t line_pos);
 
 
 #endif

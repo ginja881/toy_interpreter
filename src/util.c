@@ -19,7 +19,8 @@ int min(int a, int b) {
    return (a < b) ? a : b;
 }
 
-void error(int error_code, size_t pos, string text) {
+void error(int error_code, size_t pos, string text, size_t line_pos) {
+    fprintf(stderr, "\n On Line: %ld \n", line_pos);
     switch(error_code) {
         
 	case SYNTAX_ERROR:

@@ -10,6 +10,20 @@ ExpressionResult interpExp(A_Exp exp, HashTable symbol_table) {
         ExpressionResult result;
         result.table = symbol_table;
 
+        switch(exp->kind) {
+	     case Eseq_Exp:
+	        printf("ESEQ_INTERP");
+		break;
+             case Num_Exp:
+	        printf("NUM_INTERP");
+		break;
+             case ID_Exp:
+	        printf("ID_INTERP");
+		break;
+	     case Op_Exp:
+	        printf("OP_INTERP");
+		break;
+	}
 
         if (exp->kind == Num_Exp)  {
 	   result.val = exp->u.num_exp.num;
@@ -127,10 +141,16 @@ HashTable interpProgram(A_Stm AST_Root, HashTable symbol_table) {
        */
        
 
-       while (AST_Root->kind == CompoundStm) {
-            symbol_table = interpStatement(AST_Root->u.compound_stm.stm1, symbol_table);
-	    AST_Root = AST_Root->u.compound_stm.stm2;
+       if (AST_Root == NULL) return symbol_table;
+
+       switch(AST_Root->kind) {
+            case CompoundStm:
+	        symbol_table = interpProgram(AST_Root->u.compound_stm.stm1, symbol_table);
+		return interpProgram(AST_Root->u.compound_stm.stm2, symbol_table);
+	    default:
+	        break;
        }
+       return interpStatement(AST_Root, symbol_table);
        
        return interpStatement(AST_Root, symbol_table);
 }

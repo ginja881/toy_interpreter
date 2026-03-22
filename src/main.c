@@ -26,8 +26,22 @@ int main(int argc, char** argv) {
    Lexer lexer = make_lexer();
    FILE* fd = fopen(argv[1], "r");
    
-   lexer = read_tokens(lexer, fd);
-     
+   char* input = NULL;
+   size_t size = 0;
+   size_t line_pos = 0;
+   while (getline(&input, &size, fd) != -1) {
+         line_pos++;
+         lexer = read_tokens(lexer, input, size, line_pos);
+	 
+   }
+   free(input);
+   RawToken EOF_Token = (RawToken) checked_malloc(sizeof(struct RawToken_));
+   EOF_Token->token = END_OF_FILE;
+   EOF_Token->text_size = 0;
+   EOF_Token->next = NULL;
+
+   enqueue_token(lexer, EOF_Token);
+
    fclose(fd);
    
    

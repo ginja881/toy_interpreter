@@ -60,14 +60,11 @@ RawToken next_token(Lexer lexer) {
     return lexer->queue->token_head->next;
 }
 
-Lexer read_tokens(Lexer lexer, FILE* fd) {
-     char* input = NULL;
-     size_t size = 0;
-     getline(&input, &size, fd);
-    
+Lexer read_tokens(Lexer lexer, char* input, size_t size, size_t line_pos) {
+     
      while(input[lexer->pos] != '\0') {
            char current_char = input[lexer->pos];
-           if (isspace(current_char)) {
+           if (isspace(current_char) || current_char == '\n') {
 	       lexer->pos++;
 	       continue;
 	   }
@@ -77,6 +74,8 @@ Lexer read_tokens(Lexer lexer, FILE* fd) {
 	   RawToken new_token = (RawToken) checked_malloc(sizeof(struct RawToken_));
            new_token->next = NULL;
 	   new_token->text_size = 1;
+	   new_token->line_pos = line_pos;
+
            lexeme[0] = current_char;
            // DRY chain for operators, parentheses, and semicolons
            if (current_char == '(') {
@@ -121,10 +120,12 @@ Lexer read_tokens(Lexer lexer, FILE* fd) {
 	       for (; isalnum(current_char) && i <=99 ; i++) {
 	            if (isalpha(current_char))
 		       token_type = ID;
+		    
+
 		    lexeme[i] = input[lexer->pos];
 		    lexer->pos++;
 		    current_char = input[lexer->pos];
-	                     	    
+	            
 	       }
 	       new_token->text_size = i;
 	       lexeme[new_token->text_size] = '\0';
@@ -145,12 +146,13 @@ Lexer read_tokens(Lexer lexer, FILE* fd) {
               }
               else {
 		  lexeme[1] = '\0';
-	          error(INVALID_CHARACTER, lexer->pos, String(lexeme));
+		  
+	          error(INVALID_CHARACTER, lexer->pos, String(lexeme), line_pos);
 	      }
 	   }
 	   else {
 	      lexeme[1] = '\0';
-	      error(INVALID_CHARACTER, lexer->pos, String(lexeme));
+	      error(INVALID_CHARACTER, lexer->pos, String(lexeme), line_pos);
 	   }
            lexeme[new_token->text_size] = '\0';
 	  
@@ -160,17 +162,6 @@ Lexer read_tokens(Lexer lexer, FILE* fd) {
 	   enqueue_token(lexer, new_token);
 	  
      }
-
-     // EOF 
-     RawToken EOF_marker =  (RawToken)checked_malloc(sizeof(struct RawToken_));
-     EOF_marker->next = NULL;
-     EOF_marker->text_size = 0;
-     EOF_marker->text = "";
-     EOF_marker->token = END_OF_FILE;
-     
-
-     enqueue_token(lexer, EOF_marker);
-
-     free(input);
+   
      return lexer;
 }

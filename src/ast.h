@@ -84,7 +84,7 @@ A_Exp parse_factor(Lexer lexer);
 A_Exp parse_term(Lexer lexer);
 
 A_ExpList parse_expression_list(Lexer lexer);
-int check_next_stm_eseq(Lexer lexer);
+int check_next_stm(Lexer lexer);
 A_Exp parse_expression(Lexer lexer);
 A_Stm parse_statement(Lexer lexer);
 A_Stm parse_source_code(Lexer lexer);

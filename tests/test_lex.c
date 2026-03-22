@@ -9,50 +9,9 @@ int main(void) {
     while (is_queue_empty(lexer) != TRUE) {
          RawToken raw_token = eat_token(lexer);
          assert(raw_token);
-         char* token_type;
-	 switch (raw_token->token) {
-	      case L_PAREN: 
-	         token_type = "L_PAREN";
-		 break;
-	      case R_PAREN:
-	         token_type = "R_PAREN";
-		 break;
-              case PLUS:
-	         token_type = "PLUS";
-		 break;
-	      case SUB:
-	         token_type = "SUB";
-		 break;
-              case MUL:
-	         token_type = "MUL";
-		 break;
-	      case PRINT:
-	         token_type = "PRINT";
-		 break;
-	      case ID:
-	         token_type = "ID";
-		 break;
-	      case SEMI_COLON:
-	      	 token_type ="SEMI_COLON";
-		 break;
-	      case ASSIGN:
-	         token_type = "ASSIGN";
-		 break;
-	      case DIV:
-	         token_type = "DIV";
-		 break;
-	      case COMMA:
-	         token_type = "COMMA";
-		 break;
-	      case NUM:
-	         token_type ="NUM";
-		 break;
-             case END_OF_FILE:
-	         token_type ="EOF";
-		 break;
-	 }
-
-	 printf("\n Token type: \"%s\" \n", token_type);
+         
+	 
+	 printf("\n Token type: \"%d\" \n", token_type);
 	 printf("\n Token text:  \"%s\" \n", raw_token->text);
 	 printf("\n Token size: %ld \n", raw_token->text_size);
     }

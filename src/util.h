@@ -25,6 +25,6 @@ void* checked_malloc(size_t size);
 int max(int a, int b);
 int min(int a, int b);
 
-void error(int error_code, size_t pos, string text);
+void error(int error_code, size_t pos, string text, size_t line_pos);
 
 #endif
