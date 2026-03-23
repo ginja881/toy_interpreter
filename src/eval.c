@@ -10,31 +10,12 @@ ExpressionResult interpExp(A_Exp exp, HashTable symbol_table) {
         ExpressionResult result;
         result.table = symbol_table;
 
-        switch(exp->kind) {
-	     case Eseq_Exp:
-	        printf("ESEQ_INTERP");
-		break;
-             case Num_Exp:
-	        printf("NUM_INTERP");
-		break;
-             case ID_Exp:
-	        printf("ID_INTERP");
-		break;
-	     case Op_Exp:
-	        printf("OP_INTERP");
-		break;
-	}
+       
 
-        if (exp->kind == Num_Exp)  {
+        if (exp->kind == Num_Exp)
 	   result.val = exp->u.num_exp.num;
-	   
-	}
-	else if (exp->kind == ID_Exp) {
-	   
+	else if (exp->kind == ID_Exp)
 	    result.val = lookup(exp->u.id_exp.id, result.table);
-	    
-            printf("\n ID(%s):  %d\n", exp->u.id_exp.id, result.val);
-	}
 	else if (exp->kind == Op_Exp) {
 	      A_Exp left = exp->u.op_exp.exp1;
 	      A_Exp right = exp->u.op_exp.exp2;
@@ -61,7 +42,7 @@ ExpressionResult interpExp(A_Exp exp, HashTable symbol_table) {
 	      }
 	}
 	else if (exp->kind == Eseq_Exp) {
-             printf("\n TABLE BEFORE ESEQ: %p\n", result.table);
+           
 	     A_Stm eseq_stm = exp->u.eseq_exp.stm;
              
              result.table = interpStatement(eseq_stm, result.table);
@@ -75,7 +56,7 @@ ExpressionResult interpExp(A_Exp exp, HashTable symbol_table) {
 	     result.table = eseq_exp_result.table;
 	     symbol_table = result.table;
 	     result.val = eseq_exp_result.val;
-	     printf("\n TABLE AFTER ESEQ: %p \n", result.table);
+	    
 	}
         return result;
 }
@@ -86,17 +67,16 @@ HashTable interpExpList(A_ExpList exp_list, HashTable symbol_table, int print) {
 	* @param exp_list A_ExpList object
 	*/
         A_ExpList current_exp_list_node = exp_list;
-	int counter = 0;
 	while (current_exp_list_node != NULL) {
              A_Exp current_exp = current_exp_list_node->exp;
 	     ExpressionResult current_exp_result = interpExp(current_exp, symbol_table);
 	     symbol_table = current_exp_result.table;
-	     counter++;
+	     
 	     if (print == TRUE)
 	         printf("\n %d \n", current_exp_result.val);
 	     current_exp_list_node = current_exp_list_node->tail;
 	}
-	printf("\n EXP_LIST TOTAL: %d \n", counter);
+
 	return symbol_table;
 }
 
@@ -120,9 +100,8 @@ HashTable interpStatement(A_Stm statement, HashTable symbol_table) {
 	          statement->u.assign_stm.exp,
 		  symbol_table
 	     );
-             printf("\nAssignment: ID(%s): %d\n", id, result.val);
+           
 	     symbol_table = update(id, result.val, result.table);
-	     printf("\n ID(%s): %d \n", id, lookup(id, symbol_table));
 	    
 	}
 	else if (statement->kind == PrintStm) {

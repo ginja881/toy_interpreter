@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
    size_t line_pos = 0;
    while (getline(&input, &size, fd) != -1) {
          line_pos++;
+	 lexer->pos = 0;
          lexer = read_tokens(lexer, input, size, line_pos);
 	 
    }

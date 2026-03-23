@@ -86,9 +86,9 @@ HashTable update(string id, int value, HashTable table) {
      SymbolEntry symbol_entry = table->data[location];
     
      if (symbol_entry == NULL) {
-         printf("Inserting at %d", location);
+         
          table->data[location] = make_new_entry(id, value);
-	 printf("Success");
+	 
 	 table->size++;
 	 return table;
      }
@@ -100,9 +100,9 @@ HashTable update(string id, int value, HashTable table) {
 	  }
            
 	  if (symbol_entry->next_item == NULL) {
-	      printf("Inserting at %d", location);
+	     
 	      symbol_entry->next_item = make_new_entry(id, value);
-	      printf("Success");
+	      
 	      table->size++;
 	      return table;
 	  }

@@ -101,7 +101,7 @@ A_Exp eseq_exp(A_Stm stm, A_Exp exp) {
    
    new_exp->u.eseq_exp.stm = stm;
    new_exp->u.eseq_exp.exp = exp;
-   printf("\n ESEQ_EXP: %p\n", (void*)new_exp);
+   
    return new_exp;
 }
 

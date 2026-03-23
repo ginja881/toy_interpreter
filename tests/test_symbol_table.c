@@ -1,11 +1,12 @@
 #include "symbol.h"
 #include "util.h"
+#include <time.h>
 int main(int argc, char** argv) {
       if (argc < 2) {
-          perror("Must specify capacity");
-	  return EXIT_FAILURE;
+          perror("\nMust specify capacity\n");
+	  _Exit(-1);
       }
-
+      srand(time(NULL));
      
       size_t capacity = atoi(argv[1]);
       
@@ -16,30 +17,33 @@ int main(int argc, char** argv) {
 
       printf("\n Passed!\n");
 
-      hash_table = update("a", 5, hash_table);
-      hash_table = update("b", 2, hash_table);
-      hash_table = update("c", 4, hash_table);
+      char* key_input = "abcdefghijklmnopqrstuvwxyz";
+      
+      printf("\n ---SYMBOL UPDATE and LOOKUP---\n");
 
+      for (size_t i = 0; key_input[i] != '\0'; i++) {
+            char input[1];
+	    input[0] = key_input[i];
+	    input[1] = '\0';
 
-      printf("\n Testing updating\n");
-      assert(hash_table);
+            string actual_key = String(input);
 
-      printf("\n Passed!\n");
+            printf("\nTesting update on key: %s\n", actual_key);
+	    
+	    hash_table = update(actual_key, rand(), hash_table);
+	    assert(hash_table);
 
-      printf(
-           "\n Grabbed pair with key %s and value %d \n", "a", 
-           lookup("a", hash_table)
-      );
+	    printf("\n Testing lookup on same key\n");
+            int value = lookup(actual_key, hash_table);
 
-      printf(
-          "\n Grabbed pair with key %s and value %d \n", "b",
-	  lookup("b", hash_table)
-      );
+	    if (value == NOT_FOUND)
+	       printf("\n Value at %s is not found\n", actual_key);
+	    else
+	       printf("\n Value at %s is %d\n", actual_key, value);
 
-      printf(
-          "\n Grabbed pair with key %s and value %d \n", "c",
-	  lookup("c", hash_table)
-      );
-
+	    printf("\nSUCCESS\n");
+      }
+      
+     
 
 }
